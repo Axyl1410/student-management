@@ -18,9 +18,12 @@ public class Class {
     @Id
     private String id;
     private String className;
+    private String description;
     private Integer year;
     private String major;
+    private String teacherId;
     private String classMonitorId;
+    private String status;
     private Date createdAt;
     private Date updatedAt;
 }

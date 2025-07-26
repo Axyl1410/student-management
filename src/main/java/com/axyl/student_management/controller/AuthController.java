@@ -17,10 +17,10 @@ import java.util.Set;
 @RequestMapping("/api/v1/auth")
 @CrossOrigin(origins = "*")
 public class AuthController {
-    
+
     @Autowired
     private UserService userService;
-    
+
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<LoginResponse>> login(@RequestBody LoginRequest loginRequest) {
         try {
@@ -28,33 +28,32 @@ public class AuthController {
                 User user = userService.getUserByUsername(loginRequest.getUsername()).orElse(null);
                 if (user != null && user.isEnabled()) {
                     userService.updateLastLogin(loginRequest.getUsername());
-                    
+
                     // Generate a simple token (in real application, use JWT)
                     String token = "Bearer_" + System.currentTimeMillis() + "_" + user.getId();
-                    
+
                     LoginResponse response = new LoginResponse(
-                        token,
-                        user.getUsername(),
-                        user.getFullName(),
-                        user.getRole(),
-                        "Login successful"
-                    );
-                    
+                            token,
+                            user.getUsername(),
+                            user.getFullName(),
+                            user.getRole(),
+                            "Login successful");
+
                     return ResponseEntity.ok(ApiResponse.success("Login successful", response));
                 } else {
                     return ResponseEntity.badRequest()
-                        .body(ApiResponse.error("Account is disabled"));
+                            .body(ApiResponse.error("Account is disabled"));
                 }
             } else {
                 return ResponseEntity.badRequest()
-                    .body(ApiResponse.error("Invalid username or password"));
+                        .body(ApiResponse.error("Invalid username or password"));
             }
         } catch (Exception e) {
             return ResponseEntity.badRequest()
-                .body(ApiResponse.error("Login failed: " + e.getMessage()));
+                    .body(ApiResponse.error("Login failed: " + e.getMessage()));
         }
     }
-    
+
     @PostMapping("/register")
     public ResponseEntity<ApiResponse<User>> register(@RequestBody User user) {
         try {
@@ -62,29 +61,29 @@ public class AuthController {
             if (user.getRole() == null || user.getRole().isEmpty()) {
                 user.setRole("STUDENT");
             }
-            
+
             // Set default permissions
             Set<String> permissions = new HashSet<>();
             permissions.add("READ");
             user.setPermissions(permissions);
-            
+
             User createdUser = userService.createUser(user);
             // Don't return password in response
             createdUser.setPassword(null);
-            
+
             return ResponseEntity.ok(ApiResponse.success("User registered successfully", createdUser));
         } catch (Exception e) {
             return ResponseEntity.badRequest()
-                .body(ApiResponse.error("Registration failed: " + e.getMessage()));
+                    .body(ApiResponse.error("Registration failed: " + e.getMessage()));
         }
     }
-    
+
     @PostMapping("/logout")
     public ResponseEntity<ApiResponse<String>> logout() {
         // In a real application, you would invalidate the JWT token
         return ResponseEntity.ok(ApiResponse.success("Logout successful", "Logged out successfully"));
     }
-    
+
     @GetMapping("/profile")
     public ResponseEntity<ApiResponse<User>> getProfile(@RequestParam String username) {
         try {
@@ -97,7 +96,7 @@ public class AuthController {
             }
         } catch (Exception e) {
             return ResponseEntity.badRequest()
-                .body(ApiResponse.error("Failed to get profile: " + e.getMessage()));
+                    .body(ApiResponse.error("Failed to get profile: " + e.getMessage()));
         }
     }
 }

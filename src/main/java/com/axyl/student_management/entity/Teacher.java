@@ -19,11 +19,16 @@ public class Teacher {
     @Id
     private String id;
     private String fullName;
+    private Date dateOfBirth;
+    private String gender;
     @Indexed(unique = true)
     private String email;
     private String phoneNumber;
+    private String address;
+    @Indexed(unique = true)
+    private String teacherId;
     private String department;
+    private String status;
     private Date createdAt;
     private Date updatedAt;
-
 }
