@@ -9,26 +9,32 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
+import java.util.Set;
 
-@Document(collection = "teachers")
+@Document(collection = "users")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Teacher {
+public class User {
     @Id
     private String id;
-    private String fullName;
-    private Date dateOfBirth;
-    private String gender;
+    
+    @Indexed(unique = true)
+    private String username;
+    
     @Indexed(unique = true)
     private String email;
-    private String phoneNumber;
-    private String address;
-    @Indexed(unique = true)
-    private String teacherId;
-    private String department;
-    private String status;
+    
+    private String password;
+    private String fullName;
+    private String role; // ADMIN, TEACHER, STUDENT
+    private Set<String> permissions;
+    private boolean enabled = true;
+    private boolean accountNonExpired = true;
+    private boolean credentialsNonExpired = true;
+    private boolean accountNonLocked = true;
+    private Date lastLoginDate;
     private Date createdAt;
     private Date updatedAt;
 }
